@@ -199,6 +199,7 @@ gulp.step('set-multi-browser-mode', done => {
 
 gulp.task('multi-window-http-playground', gulp.series(BUILD_TASK, 'set-multi-browser-mode', 'http-playground-server'));
 
+gulp.task('http-playground-only', gulp.series('http-playground-server'));
 gulp.task('http-playground', gulp.series(BUILD_TASK, 'http-playground-server'));
 
 gulp.step('https-playground-server', () => {
