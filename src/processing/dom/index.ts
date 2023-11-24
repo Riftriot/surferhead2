@@ -213,31 +213,31 @@ export default class DomProcessor {
             {
                 selector:          selectors.HAS_FORMTARGET_ATTR,
                 targetAttr:        'formtarget',
-                elementProcessors: [this._processTargetBlank],
+                elementProcessors: [this._processTargetAttr],
             },
             {
                 selector:          selectors.HAS_HREF_ATTR,
                 urlAttr:           'href',
                 targetAttr:        'target',
-                elementProcessors: [this._processTargetBlank, this._processUrlAttrs, this._processUrlJsAttr],
+                elementProcessors: [this._processTargetAttr, this._processUrlAttrs, this._processUrlJsAttr],
             },
             {
                 selector:          selectors.HAS_SRC_ATTR,
                 urlAttr:           'src',
                 targetAttr:        'target',
-                elementProcessors: [this._processTargetBlank, this._processUrlAttrs, this._processUrlJsAttr],
+                elementProcessors: [this._processTargetAttr, this._processUrlAttrs, this._processUrlJsAttr],
             },
             {
                 selector:          selectors.HAS_SRCSET_ATTR,
                 urlAttr:           'srcset',
                 targetAttr:        'target',
-                elementProcessors: [this._processTargetBlank, this._processUrlAttrs, this._processUrlJsAttr],
+                elementProcessors: [this._processTargetAttr, this._processUrlAttrs, this._processUrlJsAttr],
             },
             {
                 selector:          selectors.HAS_ACTION_ATTR,
                 urlAttr:           'action',
                 targetAttr:        'target',
-                elementProcessors: [this._processTargetBlank, this._processUrlAttrs, this._processUrlJsAttr],
+                elementProcessors: [this._processTargetAttr, this._processUrlAttrs, this._processUrlJsAttr],
             },
             {
                 selector:          selectors.HAS_FORMACTION_ATTR,
@@ -581,7 +581,7 @@ export default class DomProcessor {
         }
     }
 
-    _processTargetBlank (el: HTMLElement, _urlReplacer: UrlReplacer, pattern: ElementProcessingPattern): void {
+    _processTargetAttr (el: HTMLElement, _urlReplacer: UrlReplacer, pattern: ElementProcessingPattern): void {
         if (this.allowMultipleWindows || !pattern.targetAttr)
             return;
 
@@ -597,7 +597,13 @@ export default class DomProcessor {
         attrValue = attrValue && attrValue.replace(/\s/g, '');
 
         if (attrValue === '_blank') {
-            this.adapter.setAttr(el, pattern.targetAttr, '_top');
+            this.adapter.setAttr(el, pattern.targetAttr, '_self');
+            // this.adapter.setAttr(el, pattern.targetAttr, '_top');
+            this.adapter.setAttr(el, storedTargetAttr, attrValue);
+        }
+        // TODO: Vexcited: add better checks with event listener (ig ??)
+        else if (attrValue === '_top') {
+            this.adapter.setAttr(el, pattern.targetAttr, '_self');
             this.adapter.setAttr(el, storedTargetAttr, attrValue);
         }
     }
