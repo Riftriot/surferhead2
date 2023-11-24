@@ -67,6 +67,8 @@ export default class PageNavigationWatch extends EventEmiter {
 
         switch (target) {
             case '_top':
+                // TODO: uh, this is not good
+                console.log('todo: top targetWindow');
                 return window.top;
             case '_parent':
                 return window.parent;
