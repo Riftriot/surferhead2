@@ -121,6 +121,7 @@ gulp.step('lint-js', () => {
         .pipe(eslint.failAfterError());
 });
 
+// same as `npx eslint ./src/**/*.ts [--fix]`
 gulp.step('lint-ts', () => {
     return gulp.src('./src/**/*.ts')
         .pipe(eslint())
