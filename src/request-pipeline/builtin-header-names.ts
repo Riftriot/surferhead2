@@ -20,6 +20,7 @@ export default {
     contentType:        'content-type',
     location:           'location',
     xFrameOptions:      'x-frame-options',
+    permissionsPolicy:  'permissions-policy',
     sourceMap:          'sourcemap',
     referrerPolicy:     'referrer-policy',
     refresh:            'refresh',

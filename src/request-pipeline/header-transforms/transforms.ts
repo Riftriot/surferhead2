@@ -178,8 +178,8 @@ export const responseTransforms = {
         const isCrossDomain = ctx.isIframe && !ctx.session.isCrossDomainDisabled() && !urlUtils.sameOriginCheck(ctx.dest.url, src);
         const proxiedUrl    = ctx.toProxyUrl(src, isCrossDomain, ctx.contentInfo.contentTypeUrlToken);
 
-        return 'ALLOW-FROM ' + proxiedUrl;
-    },
+    // Vexcited: Allow all origins.
+    [BUILTIN_HEADERS.permissionsPolicy]: skip,
 
     [BUILTIN_HEADERS.sourceMap]:      skip,
     [BUILTIN_HEADERS.referrerPolicy]: () => 'unsafe-url',
