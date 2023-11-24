@@ -6,6 +6,7 @@
 export default {
     getLocation:    '__get$Loc',
     setLocation:    '__set$Loc',
+    getTop:         '__get$Top',
     getProperty:    '__get$',
     setProperty:    '__set$',
     callMethod:     '__call$',

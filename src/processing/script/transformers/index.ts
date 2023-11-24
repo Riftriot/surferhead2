@@ -20,6 +20,7 @@ import forInTransformer from './for-in';
 import forOfTransformer from './for-of';
 import locationGetTransformer from './location-get';
 import locationSetTransformer from './location-set';
+import topGetTransformer from './top-get';
 import propertyGetTransformer from './property-get';
 import propertySetTransformer from './property-set';
 import methodCallTransformer from './method-call';
@@ -63,6 +64,7 @@ const TRANSFORMERS: Transformer<any>[] = [
     forOfTransformer,
     locationGetTransformer,
     locationSetTransformer,
+    topGetTransformer,
     propertyGetTransformer,
     propertySetTransformer,
     methodCallTransformer,

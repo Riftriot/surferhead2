@@ -12,6 +12,7 @@ export const METHODS = [
 
 export const PROPERTIES = [
     'href',
+    'top',
     'location',
 ];
 
