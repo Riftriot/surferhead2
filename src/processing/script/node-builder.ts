@@ -157,6 +157,12 @@ export function createLocationSetWrapper (locationIdentifier: Identifier, value:
     return functionWrapperCall;
 }
 
+export function createTopGetWrapper (top: Identifier): CallExpression {
+    const getTopIdentifier = createIdentifier(INSTRUCTION.getTop);
+
+    return createSimpleCallExpression(getTopIdentifier, [top]);
+}
+
 export function createPropertySetWrapper (propertyName: string, obj: Expression, value: Expression): CallExpression {
     const setPropertyIdentifier = createIdentifier(INSTRUCTION.setProperty);
 
