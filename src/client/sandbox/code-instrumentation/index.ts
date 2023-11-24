@@ -1,6 +1,7 @@
 import SandboxBase from '../base';
 import PropertyAccessorsInstrumentation from './properties';
 import LocationAccessorsInstrumentation from './location';
+import TopAccessorInstrumentation from './top';
 import MethodCallInstrumentation from './methods';
 import { processScript } from '../../../processing/script';
 import INSTRUCTION from '../../../processing/script/instruction';
@@ -17,6 +18,7 @@ export default class CodeInstrumentation extends SandboxBase {
 
     _methodCallInstrumentation: MethodCallInstrumentation;
     _locationAccessorsInstrumentation: LocationAccessorsInstrumentation;
+    _topAccessorInstrumentation: TopAccessorInstrumentation;
     _propertyAccessorsInstrumentation: PropertyAccessorsInstrumentation;
 
     constructor (eventSandbox: EventSandbox, messageSandbox: MessageSandbox) {
@@ -24,6 +26,7 @@ export default class CodeInstrumentation extends SandboxBase {
 
         this._methodCallInstrumentation        = new MethodCallInstrumentation(eventSandbox.message);
         this._locationAccessorsInstrumentation = new LocationAccessorsInstrumentation(messageSandbox);
+        this._topAccessorInstrumentation       = new TopAccessorInstrumentation();
         this._propertyAccessorsInstrumentation = new PropertyAccessorsInstrumentation();
     }
 
@@ -32,6 +35,7 @@ export default class CodeInstrumentation extends SandboxBase {
 
         this._methodCallInstrumentation.attach(window);
         this._locationAccessorsInstrumentation.attach(window);
+        this._topAccessorInstrumentation.attach(window);
         this._propertyAccessorsInstrumentation.attach(window);
 
         // NOTE: In Google Chrome, iframes whose src contains html code raise the 'load' event twice.

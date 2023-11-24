@@ -1,5 +1,6 @@
 import LocationAccessorsInstrumentation from '../location';
 import LocationWrapper from '../location/wrapper';
+import TopAccessorInstrumentation from '../top';
 import SandboxBase from '../../base';
 import * as domUtils from '../../../utils/dom';
 import { isNullOrUndefined, inaccessibleTypeToStr } from '../../../utils/types';
@@ -82,6 +83,20 @@ export default class PropertyAccessorsInstrumentation extends SandboxBase {
             condition: (owner: any) => domUtils.isDocument(owner) || domUtils.isWindow(owner),
             get:       PropertyAccessorsInstrumentation._getLocation,
             set:       PropertyAccessorsInstrumentation._setLocation,
+        },
+
+        top: {
+            condition: (w: any) => {
+                // NOTE: In IE, the 'top' property is accessible only for the window where it was created.
+                // If we try to get access to the 'top' property from a different window, an error will be raised.
+                try {
+                    return w instanceof Window;
+                }
+                catch (e) {
+                    return false;
+                }
+            },
+            get: TopAccessorInstrumentation._topGetter,
         },
     };
 
