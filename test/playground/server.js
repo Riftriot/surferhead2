@@ -1,7 +1,6 @@
 const express       = require('express');
 const http          = require('http');
 const path          = require('path');
-const process       = require('child_process');
 const bodyParser    = require('body-parser');
 const Proxy         = require('../../lib/proxy');
 const createSession = require('./create-session');
@@ -49,6 +48,7 @@ exports.start = (options = {}) => {
     }
 
     app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
 
     app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'views/index.html'));
@@ -64,18 +64,17 @@ exports.start = (options = {}) => {
         }
         else {
             url = prepareUrl(url);
-
-            res
-                .status(301)
-                .set('referrer-policy', 'no-referrer')
-                .set('location', proxy.openSession(url, createSession()))
-                .end();
+            url = proxy.openSession(url, createSession());
+            res.json({ url });
+            // res
+            //     .status(301)
+            //     .set("access-control-expose-headers", "Location")
+            //     .set('referrer-policy', 'no-referrer')
+            //     .set('location', proxy.openSession(url, createSession()))
+            //     .end();
         }
     });
 
     appServer.listen(SERVER_PORT);
-
-    console.log('Server listens on port ' + SERVER_PORT);
-
-    process.exec('start http://localhost:' + SERVER_PORT);
+    console.log('Server listens on http://localhost:' + SERVER_PORT);
 };

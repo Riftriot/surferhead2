@@ -1,14 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
+  <title>Surferhead IFrame Playground</title>
 </head>
 <body>
-<form action="index" method="POST">
-    <div style="text-align: center; margin-top: 300px;">
-        <input type="text" name="url" style="width: 500px;">
-        <input type="submit" name="submit" value="Proxy!">
-    </div>
-</form>
+  <input type="text" id="sh_iframe_original_url">
+  <button type="button" name="submit" id="sh_url_btn">
+    Attach to iframe
+  </button>
+
+  <script>
+    const iframe = document.createElement('iframe');
+    // Prevent sending the `Referer` header.
+    iframe.setAttribute("referrerpolicy", "no-referrer");
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.src = 'about:blank';
+
+    document.body.appendChild(iframe);
+
+    /** @type {HTMLInputElement} */
+    const urlInput = document.querySelector('#sh_iframe_original_url');
+    /** @type {HTMLButtonElement} */
+    const urlBtn = document.querySelector('#sh_url_btn');
+
+    urlBtn.onclick = async () => {
+      const url = urlInput.value;
+      if (!url) return;
+
+      const response = await fetch("/api/iframe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+        redirect: "manual"
+      });
+
+      // get the location header
+      const json = await response.json()
+      const proxy_url = json.url;
+      if (!proxy_url) return;
+
+      console.info("iframe: Redirecting to", proxy_url);
+      iframe.src = proxy_url;
+    };
+  </script>
 </body>
 </html>
