@@ -164,19 +164,24 @@ export const responseTransforms = {
         return src;
     },
 
-    [BUILTIN_HEADERS.xFrameOptions]: (src: string, ctx: RequestPipelineContext) => {
-        const cspHeader = ctx.destRes.headers[BUILTIN_HEADERS.contentSecurityPolicy];
+    // Vexcited: Disable x-frame-options header.
+    [BUILTIN_HEADERS.xFrameOptions]: skip,
+    // [BUILTIN_HEADERS.xFrameOptions]: (src: string, ctx: RequestPipelineContext) => {
+    //     const cspHeader = ctx.destRes.headers[BUILTIN_HEADERS.contentSecurityPolicy];
 
-        if (cspHeader && cspHeader.includes('frame-ancestors '))
-            return void 0;
+    //     if (cspHeader && cspHeader.includes('frame-ancestors '))
+    //         return void 0;
 
-        if (!src.includes('ALLOW-FROM'))
-            return src;
+    //     if (!src.includes('ALLOW-FROM'))
+    //         return src;
 
-        src = src.replace('ALLOW-FROM', '').trim();
+    //     src = src.replace('ALLOW-FROM', '').trim();
 
-        const isCrossDomain = ctx.isIframe && !ctx.session.isCrossDomainDisabled() && !urlUtils.sameOriginCheck(ctx.dest.url, src);
-        const proxiedUrl    = ctx.toProxyUrl(src, isCrossDomain, ctx.contentInfo.contentTypeUrlToken);
+    //     const isCrossDomain = ctx.isIframe && !ctx.session.isCrossDomainDisabled() && !urlUtils.sameOriginCheck(ctx.dest.url, src);
+    //     const proxiedUrl    = ctx.toProxyUrl(src, isCrossDomain, ctx.contentInfo.contentTypeUrlToken);
+
+    //     return 'ALLOW-FROM ' + proxiedUrl;
+    // },
 
     // Vexcited: Allow all origins.
     [BUILTIN_HEADERS.permissionsPolicy]: skip,
