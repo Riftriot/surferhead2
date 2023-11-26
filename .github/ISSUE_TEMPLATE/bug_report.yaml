@@ -7,9 +7,9 @@ body:
       value: |
         If you have all reproduction steps with a complete sample app, please share as many details as possible in the sections below.
 
-        Make sure that you tried using the latest [Hammerhead](https://github.com/DevExpress/testcafe-hammerhead/releases) version, where this behavior might have been already addressed.
+        Make sure that you tried using the latest [Surferhead](https://github.com/Vexcited/surferhead/releases) version, where this behavior might have been already addressed.
 
-        Before submitting an issue, please check existing issues in [this repository](https://github.com/DevExpress/testcafe-hammerhead/issues) in case a similar issue exists or was already addressed. This may save your time (and ours).
+        Before submitting an issue, please check existing issues in [this repository](https://github.com/Vexcited/surferhead/issues) in case a similar issue exists or was already addressed. This may save your time (and ours).
   
   - type: textarea
     id: scenario
@@ -41,7 +41,7 @@ body:
   - type: textarea
     id: url
     attributes:
-      label: What is your public website URL? (or attach your complete example)
+      label: What is your public website URL? (or attach your complete example)
       description: |
         Please share a public accessible URL to your application or attach a simple app which we can run.
         Note: if your website requires any additional access procedures like authentication, please ask the website owner to send us a written confirmation at [support@devexpress.com](mailto:support@devexpress.com) in a free text form. It will allow the DevExpress staff to remotely access the website and its internal resources for research, testing, and debugging purposes.
@@ -52,29 +52,11 @@ body:
   - type: textarea
     id: testcase
     attributes:
-      label: What is your TestCafe test code?
+      label: What is the code used?
       description: >
-        Please paste your complete test code including all the referenced modules if any.
+        Please paste your code including all the referenced modules if any.
     validations:
       required: true
-
-  - type: textarea
-    id: config
-    attributes:
-      label: Your complete configuration file
-      description: >
-        Paste your complete configuration file (e.g., .testcaferc.js or .testcaferc.json).
-    validations:
-      required: false
-
-  - type: textarea
-    id: report
-    attributes:
-      label: Your complete test report
-      description: >
-        Paste your complete result test report here (even if it is huge).
-    validations:
-      required: false
 
   - type: textarea
     id: screenhots
@@ -105,15 +87,6 @@ body:
         Your Environment details:
 
   - type: input
-    id: version
-    attributes:
-      label: TestCafe version
-      description: >
-        Run `testcafe -v`
-    validations:
-      required: true
-
-  - type: input
     id: nodejs
     attributes:
       label: Node.js version
@@ -121,15 +94,6 @@ body:
         Run `node -v`
     validations:
       required: false
-
-  - type: input
-    id: cmdline
-    attributes:
-      label: Command-line arguments
-      description: >
-        Example: testcafe firefox,chrome -e test.js
-    validations:
-      required: true
 
   - type: input
     id: browser
