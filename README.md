@@ -1,6 +1,8 @@
-# surferhead
+# Surferhead
 
-`surferhead` is a powerful Web proxy that is made to be wrapped inside an iframe. It's an hard fork of testcafe-hammerhead.
+Surferhead is a powerful Web proxy that is **made to be wrapped inside an iframe**. It's an hard fork of [testcafe-hammerhead](https://github.com/DevExpress/testcafe-hammerhead).
+
+> This hard fork is synced from this commit in `master` branch: [7f4279821c8754323fdc7fd6659ebeea45d15131](https://github.com/DevExpress/testcafe-hammerhead/commit/7f4279821c8754323fdc7fd6659ebeea45d15131)
 
 ## Core Concepts
 
@@ -8,15 +10,11 @@
 
 In addition, the proxied web page does not know that it is opened under a proxy. The proxy intercepts access attempts to all URL-containing properties and provides the original values.
 
-## Hardcoded variables
-
-- [x] `surferhead_top_proxied_iframe` - the topmost iframe that is proxied
-  - This is the value of the `name` attribute of the iframe that is going to wrap the proxy.
-
+Also, the proxy can rewrite `window.top` and `window.parent` to make sure the proxied page doesn't know it's opened in a frame (the wrapper).
 
 ## First Look
 
-1. Clone the Hammerhead repository
+1. Clone the Surferhead repository
 
     ```cmd
     git clone https://github.com/Vexcited/surferhead.git
@@ -34,22 +32,21 @@ In addition, the proxied web page does not know that it is opened under a proxy.
     npm install
     ```
 
-1. Run the [Hammerhead playground](./test/playground/server.js) to see our proxy in action
+1. Run the [Surferhead playground](./test/playground/server.js) to see our proxy in action
 
     ```cmd
     node node_modules/gulp/bin/gulp http-playground
     ```
 
-This opens a playground page where you can specify a webpage to proxy. Enter the page URL and hit **Proxy!**.
+This opens a playground page where you can specify a webpage to proxy in an iframe. Enter the page URL and hit **Attach to iframe**.
 
 ## Features
 
 * HTTP/HTTPS requests
 * WebSockets, EventSource
-* file upload
+* File upload
 * request events (`onRequest`, `onResponse`)
-* bypassing requests
-* custom UI on a web page
+* Bypassing requests
 
 ## Reporting Issues and Contributing
 
