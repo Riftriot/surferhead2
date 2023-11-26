@@ -7,8 +7,6 @@ const createSession = require('./create-session');
 const scriptProc    = require('../../lib/processing/script');
 const jsBeautify    = require('js-beautify');
 
-const PROXY_PORT_1 = 1401;
-const PROXY_PORT_2 = 1402;
 const SERVER_PORT  = 1400;
 
 function prepareUrl (url) {
@@ -32,8 +30,7 @@ exports.start = (options = {}) => {
 
     const resultOptions = Object.assign(options, {
         hostname:        'localhost',
-        port1:           PROXY_PORT_1,
-        port2:           PROXY_PORT_2,
+        port:            1401,
         developmentMode: true,
     });
 

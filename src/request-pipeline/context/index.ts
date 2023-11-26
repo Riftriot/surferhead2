@@ -438,7 +438,7 @@ export default class RequestPipelineContext extends BaseRequestPipelineContext {
     toProxyUrl (url: string, isCrossDomain: boolean, resourceType: string, charset?: string, reqOrigin?: string, credentials?: urlUtils.Credentials): string {
         const proxyHostname = this.serverInfo.hostname;
         const proxyProtocol = this.serverInfo.protocol;
-        const proxyPort     = isCrossDomain ? this.serverInfo.crossDomainPort.toString() : this.serverInfo.port.toString();
+        const proxyPort     = this.serverInfo.port.toString();
         const sessionId     = this.session.id;
         const windowId      = this.windowId;
 
@@ -458,11 +458,11 @@ export default class RequestPipelineContext extends BaseRequestPipelineContext {
         });
     }
 
-    getProxyOrigin (isCrossDomain = false) {
+    getProxyOrigin () {
         return urlUtils.getDomain({
             protocol: this.serverInfo.protocol,
             hostname: this.serverInfo.hostname,
-            port:     isCrossDomain ? this.serverInfo.crossDomainPort : this.serverInfo.port,
+            port:     this.serverInfo.port,
         });
     }
 

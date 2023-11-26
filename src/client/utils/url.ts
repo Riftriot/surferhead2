@@ -85,8 +85,6 @@ export let getProxyUrl = function (url: string | URL, opts: Partial<ProxyUrlOpti
     let charset       = opts && opts.charset;
     let reqOrigin     = opts && opts.reqOrigin;
 
-    const crossDomainPort = getCrossDomainProxyPort(proxyPort);
-
     // NOTE: If the relative URL contains no slash (e.g. 'img123'), the resolver will keep
     // the original proxy information, so that we can return such URL as is.
     // TODO: Implement the isProxyURL function.
@@ -94,7 +92,7 @@ export let getProxyUrl = function (url: string | URL, opts: Partial<ProxyUrlOpti
 
     /*eslint-disable no-restricted-properties*/
     const isValidProxyUrl = !!parsedProxyUrl && parsedProxyUrl.proxy.hostname === proxyHostname &&
-                            (parsedProxyUrl.proxy.port === proxyPort || parsedProxyUrl.proxy.port === crossDomainPort);
+                            parsedProxyUrl.proxy.port === proxyPort;
     /*eslint-enable no-restricted-properties*/
 
     if (isValidProxyUrl) {
@@ -147,7 +145,7 @@ export let getProxyUrl = function (url: string | URL, opts: Partial<ProxyUrlOpti
         reqOrigin   = reqOrigin || destLocation.getOriginHeader();
     }
 
-    if (parsedResourceType.isIframe && proxyPort === settings.get().crossDomainProxyPort)
+    if (parsedResourceType.isIframe)
         reqOrigin = reqOrigin || destLocation.getOriginHeader();
 
     return sharedUrlUtils.getProxyUrl(resolvedUrl, {
@@ -200,7 +198,7 @@ export function getNavigationUrl (url: string, win, nativeAutomation = false): s
 
 export let getCrossDomainIframeProxyUrl = function (url: string) {
     return getProxyUrl(url, {
-        proxyPort:    settings.get().crossDomainProxyPort,
+        proxyPort:    settings.get().proxyPort,
         resourceType: sharedUrlUtils.getResourceTypeString({ isIframe: true }),
     });
 };
@@ -226,16 +224,16 @@ export function getPageProxyUrl (url: string, windowId: string): string {
     }
 
     const isCrossDomainUrl = !destLocation.sameOriginCheck(destLocation.getLocation(), url);
-    const proxyPort        = isCrossDomainUrl ? settings.get().crossDomainProxyPort : location.port.toString(); // eslint-disable-line no-restricted-properties
+    const proxyPort        = isCrossDomainUrl ? settings.get().proxyPort : location.port.toString(); // eslint-disable-line no-restricted-properties
 
     return getProxyUrl(url, { windowId, proxyPort, resourceType });
 }
 
 export function getCrossDomainProxyPort (proxyPort: string) {
-    return settings.get().crossDomainProxyPort === proxyPort
+    return settings.get().proxyPort === proxyPort
         // eslint-disable-next-line no-restricted-properties
         ? location.port.toString()
-        : settings.get().crossDomainProxyPort;
+        : settings.get().proxyPort;
 }
 
 export let resolveUrlAsDest = function (url: string, isUrlsSet = false) {
@@ -266,7 +264,7 @@ export let convertToProxyUrl = function (url: string, resourceType, charset, isC
     return getProxyUrl(url, {
         resourceType, charset,
         // eslint-disable-next-line no-restricted-properties
-        proxyPort: isCrossDomain ? settings.get().crossDomainProxyPort : DEFAULT_PROXY_SETTINGS.port,
+        proxyPort: isCrossDomain ? settings.get().proxyPort : DEFAULT_PROXY_SETTINGS.port,
     });
 };
 
@@ -274,7 +272,7 @@ export function getCrossDomainProxyOrigin () {
     return sharedUrlUtils.getDomain({
         protocol: location.protocol, // eslint-disable-line no-restricted-properties
         hostname: location.hostname, // eslint-disable-line no-restricted-properties
-        port:     settings.get().crossDomainProxyPort,
+        port:     settings.get().proxyPort,
     });
 }
 
@@ -365,7 +363,7 @@ export function getAjaxProxyUrl (url: string | URL, credentials: sharedUrlUtils.
     const opts          = { resourceType: stringifyResourceType({ isAjax: true }), credentials } as any;
 
     if (isCrossDomain) {
-        opts.proxyPort = settings.get().crossDomainProxyPort;
+        opts.proxyPort = settings.get().proxyPort;
         opts.reqOrigin = destLocation.getOriginHeader();
     }
 

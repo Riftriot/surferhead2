@@ -141,7 +141,7 @@ export const responseTransforms = {
     [BUILTIN_HEADERS.proxyAuthenticate]: addAuthenticatePrefix,
 
     [BUILTIN_HEADERS.accessControlAllowOrigin]: (_src: string, ctx: RequestPipelineContext) =>
-        ctx.isSameOriginPolicyFailed ? void 0 : ctx.getProxyOrigin(!!ctx.dest.reqOrigin),
+        ctx.isSameOriginPolicyFailed ? void 0 : ctx.getProxyOrigin(),
 
     // NOTE: Change the transform type if we have an iframe with an image as src,
     // because it was transformed to HTML with the image tag.

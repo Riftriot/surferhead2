@@ -49,11 +49,10 @@ function parseAsJson (msg: Buffer): ServiceMessage | WebSocketServiceMessage | n
     }
 }
 
-function createServerInfo (hostname: string, port: number, crossDomainPort: number, protocol: string, cacheRequests: boolean): ServerInfo {
+function createServerInfo (hostname: string, port: number, protocol: string, cacheRequests: boolean): ServerInfo {
     return {
         hostname,
         port,
-        crossDomainPort,
         protocol,
         cacheRequests,
         domain: `${protocol}//${hostname}:${port}`,
@@ -69,13 +68,10 @@ const DEFAULT_PROXY_OPTIONS = {
 export default class Proxy extends Router {
     private readonly openSessions: Map<string, Session> = new Map();
     private server1Info: ServerInfo | null;
-    private server2Info: ServerInfo | null;
     private server1: http.Server | https.Server | null;
-    private server2: http.Server | https.Server | null;
     private proxyOptions: ProxyOptions | null;
     private readonly sockets: Set<net.Socket>;
     private wss1: nodeWebSocket.Server;
-    private wss2: nodeWebSocket.Server;
 
     // Max header size for incoming HTTP requests
     // Set to 80 KB as it was the original limit:
@@ -88,9 +84,7 @@ export default class Proxy extends Router {
         super(options);
 
         this.server1       = null;
-        this.server2       = null;
         this.server1Info   = null;
-        this.server2Info   = null;
         this.proxyOptions  = null;
         this.sockets       = new Set<net.Socket>();
     }
@@ -121,8 +115,7 @@ export default class Proxy extends Router {
             socket.on('close', () => this.sockets.delete(socket));
         };
 
-        this.server1?.on('connection', handler); // eslint-disable-line no-unused-expressions
-        this.server2?.on('connection', handler); // eslint-disable-line no-unused-expressions
+        if (this.server1) this.server1.on('connection', handler);
     }
 
     _registerServiceRoutes (developmentMode: boolean): void {
@@ -187,7 +180,7 @@ export default class Proxy extends Router {
         });
     }
 
-    _onServiceWebSocketConnection (ws, serverInfo): void {
+    _onServiceWebSocketConnection (ws: nodeWebSocket, serverInfo: ServerInfo): void {
         logger.serviceSocket.onConnection(ws);
 
         ws.on('error', (err) => logger.serviceSocket.onError(err));
@@ -197,7 +190,7 @@ export default class Proxy extends Router {
         });
     }
 
-    async _onServiceWebSocketMessage (ws, data, serverInfo): Promise<void> {
+    async _onServiceWebSocketMessage (ws: nodeWebSocket, data, serverInfo: ServerInfo): Promise<void> {
         const msg     = parseAsJson(data) as WebSocketServiceMessage;
         const id      = msg && msg.id;
         const session = msg && this.openSessions.get(msg.sessionId);
@@ -290,8 +283,7 @@ export default class Proxy extends Router {
 
         const {
             hostname,
-            port1,
-            port2,
+            port,
             ssl,
             developmentMode,
             cache,
@@ -301,26 +293,20 @@ export default class Proxy extends Router {
         const opts         = this._getOpts(ssl);
         const createServer = this._getCreateServerMethod(ssl);
 
-        this.server1Info = createServerInfo(hostname, port1, port2, protocol, !!cache);
-        this.server2Info = createServerInfo(hostname, port2, port1, protocol, !!cache);
+        this.server1Info = createServerInfo(hostname, port, protocol, !!cache);
 
         this.server1 = createServer(opts, (req: http.IncomingMessage, res: http.ServerResponse) => this._onRequest(req, res, this.server1Info as ServerInfo));
-        this.server2 = createServer(opts, (req: http.IncomingMessage, res: http.ServerResponse) => this._onRequest(req, res, this.server2Info as ServerInfo));
 
         this.server1.on('upgrade', (req: http.IncomingMessage, socket: net.Socket, head: Buffer) => this._onUpgradeRequest(req, socket, head, this.server1Info as ServerInfo));
-        this.server2.on('upgrade', (req: http.IncomingMessage, socket: net.Socket, head: Buffer) => this._onUpgradeRequest(req, socket, head, this.server2Info as ServerInfo));
 
-        this.server1.listen(port1);
-        this.server2.listen(port2);
+        this.server1.listen(port);
 
         this.wss1 = new nodeWebSocket.Server({ noServer: true });
-        this.wss2 = new nodeWebSocket.Server({ noServer: true });
 
-        this.wss1.on('connection', (ws) => this._onServiceWebSocketConnection(ws, this.server1Info));
-        this.wss2.on('connection', (ws) => this._onServiceWebSocketConnection(ws, this.server2Info));
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.wss1.on('connection', (ws) => this._onServiceWebSocketConnection(ws, this.server1Info!));
 
         this.server1Info.wss = this.wss1;
-        this.server2Info.wss = this.wss2;
 
         // BUG: GH-89
         this._startSocketsCollecting();
@@ -328,8 +314,7 @@ export default class Proxy extends Router {
     }
     close (): void {
         scriptProcessor.jsCache.reset();
-        this.server1?.close(); // eslint-disable-line no-unused-expressions
-        this.server2?.close(); // eslint-disable-line no-unused-expressions
+        if (this.server1) this.server1.close();
         this._closeSockets();
         resetKeepAliveConnections();
     }

@@ -8,7 +8,7 @@ class Settings {
             isFirstPageLoad:          true,
             sessionId:                '',
             forceProxySrcForImage:    false,
-            crossDomainProxyPort:     '',
+            proxyPort:                '',
             referer:                  '',
             serviceMsgUrl:            '',
             transportWorkerUrl:       '',

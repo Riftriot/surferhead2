@@ -157,14 +157,14 @@ export default abstract class Session extends EventEmitter {
             cookie  = '""';
         }
 
-        const { domain, crossDomainPort } = serverInfo;
+        const { domain, port } = serverInfo;
 
         return mustache.render(TASK_TEMPLATE, {
             sessionId:             this.id,
             serviceMsgUrl:         domain + SERVICE_ROUTES.messaging,
             transportWorkerUrl:    domain + SERVICE_ROUTES.transportWorker,
             forceProxySrcForImage: this.requestHookEventProvider.hasRequestEventListeners(),
-            crossDomainPort,
+            proxyPort:             port,
             isFirstPageLoad,
             referer,
             cookie,

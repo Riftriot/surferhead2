@@ -10,7 +10,7 @@ export interface HammerheadInitSettings {
     isFirstPageLoad: boolean;
     sessionId: string;
     forceProxySrcForImage: boolean;
-    crossDomainProxyPort: string;
+    proxyPort: string;
     referer: string;
     serviceMsgUrl: string;
     transportWorkerUrl: string;

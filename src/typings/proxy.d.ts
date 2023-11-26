@@ -1,7 +1,6 @@
 export interface ServerInfo {
     hostname: string;
     port: number;
-    crossDomainPort: number;
     protocol: string;
     domain: string;
     cacheRequests: boolean;
@@ -38,8 +37,7 @@ interface RequestTimeout {
 
 interface ProxyOptions {
     hostname: string;
-    port1: number;
-    port2: number;
+    port: number;
     ssl?: object;
     developmentMode?: boolean;
     cache?: boolean;

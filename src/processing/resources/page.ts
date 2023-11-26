@@ -35,7 +35,6 @@ const PARSED_ORIGIN_FIRST_TITLE_ELEMENT_LOADED_SCRIPT = parseFragment(SELF_REMOV
 const PARSED_INIT_SCRIPT_FOR_IFRAME_TEMPLATE          = parseFragment(SELF_REMOVING_SCRIPTS.iframeInit).childNodes![0];
 
 interface PageProcessingOptions {
-    crossDomainProxyPort?: number;
     isIframe?: boolean;
     stylesheets: string[];
     scripts: string[];
@@ -92,7 +91,6 @@ class PageProcessor extends ResourceProcessorBase {
 
     private static _getPageProcessingOptions (ctx: RequestPipelineContext, urlReplacer: Function): PageProcessingOptions {
         return {
-            crossDomainProxyPort: ctx.serverInfo.crossDomainPort,
             isIframe:             ctx.isIframe,
             stylesheets:          ctx.getInjectableStyles(),
             scripts:              ctx.getInjectableScripts(),
