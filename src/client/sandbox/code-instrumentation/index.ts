@@ -37,12 +37,12 @@ export default class CodeInstrumentation extends SandboxBase {
         this._propertyAccessorsInstrumentation.attach(window);
 
         nativeMethods.objectDefineProperty(window, INSTRUCTION.getTop, {
-            value:        getProxiedIframeTop,
+            value:        () => getProxiedIframeTop(window),
             configurable: true,
         });
 
         nativeMethods.objectDefineProperty(window, INSTRUCTION.getParent, {
-            value:        getProxiedIframeParent,
+            value:        () => getProxiedIframeParent(window),
             configurable: true,
         });
 

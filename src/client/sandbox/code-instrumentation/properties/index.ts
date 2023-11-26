@@ -87,13 +87,13 @@ export default class PropertyAccessorsInstrumentation extends SandboxBase {
         },
 
         top: {
-            condition: (win: Window) => win.toString() === '[object Window]',
-            get:       getProxiedIframeTop,
+            condition: (owner: any) => domUtils.isWindow(owner),
+            get:       (owner: Window) => getProxiedIframeTop(owner),
         },
 
         parent: {
-            condition: (win: Window) => win.toString() === '[object Window]',
-            get:       getProxiedIframeParent,
+            condition: (owner: any) => domUtils.isWindow(owner),
+            get:       (owner: Window) => getProxiedIframeParent(owner),
         },
     };
 
