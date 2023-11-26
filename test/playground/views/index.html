@@ -12,6 +12,7 @@
   <script>
     
     const iframe = document.createElement('iframe');
+    iframe.setAttribute("name", "surferhead_top_proxied_iframe"); // Very important !
     // Prevent sending the `Referer` header.
     iframe.setAttribute("referrerpolicy", "no-referrer");
     iframe.style.width = '100%';
@@ -19,14 +20,6 @@
     iframe.src = 'about:blank';
     
     document.body.appendChild(iframe);
-    Object.defineProperty(window, '__surferhead_proxied_iframe_top', {
-      get() {
-        console.info("RECEIVED FROM TOP. PROXY TO IFRAME");
-        return iframe.contentWindow;
-      },
-
-      configurable: false
-    });
 
     /** @type {HTMLInputElement} */
     const urlInput = document.querySelector('#sh_iframe_original_url');
