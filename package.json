@@ -1,18 +1,20 @@
 {
-  "name": "testcafe-hammerhead",
-  "description": "A powerful web-proxy used as a core for the TestCafe testing framework (https://github.com/DevExpress/testcafe).",
-  "version": "31.6.4",
-  "homepage": "https://github.com/DevExpress/testcafe-hammerhead",
+  "name": "surferhead",
+  "description": "A powerful web-proxy.",
+  "version": "32.0.0",
+  "homepage": "https://github.com/Vexcited/surferhead",
   "bugs": {
-    "url": "https://github.com/DevExpress/testcafe-hammerhead/issues"
+    "url": "https://github.com/Vexcited/surferhead/issues"
   },
   "license": "MIT",
   "author": {
-    "name": "Developer Express Inc."
+    "name": "Mikkel RINGAUD",
+    "email": "mikkel@milescode.dev",
+    "url": "https://github.com/Vexcited"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DevExpress/testcafe-hammerhead.git"
+    "url": "git+https://github.com/Vexcited/surferhead.git"
   },
   "dependencies": {
     "@adobe/css-tools": "^4.3.0-rc.1",
