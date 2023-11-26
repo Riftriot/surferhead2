@@ -9,7 +9,7 @@
         "test/client/fixtures/sandbox/backup-test.js"
       ]
     },
-    "branch": "master",
+    "branch": "main",
     "gitTag": true
   },
   "confirm": false,
