@@ -53,6 +53,7 @@ const HEADER = trim(`
             var ${INSTRUCTION.getLocation} = window.${INSTRUCTION.getLocation},
                 ${INSTRUCTION.setLocation} = window.${INSTRUCTION.setLocation},
                 ${INSTRUCTION.getTop} = window.${INSTRUCTION.getTop},
+                ${INSTRUCTION.getParent} = window.${INSTRUCTION.getParent},
                 ${INSTRUCTION.setProperty} = window.${INSTRUCTION.setProperty},
                 ${INSTRUCTION.getProperty} = window.${INSTRUCTION.getProperty},
                 ${INSTRUCTION.callMethod} = window.${INSTRUCTION.callMethod},
@@ -68,7 +69,8 @@ const HEADER = trim(`
         if (typeof ${INSTRUCTION.getProperty} === 'undefined')
             var ${INSTRUCTION.getLocation} = function(l){return l},
                 ${INSTRUCTION.setLocation} = function(l,v){return l = v},
-                ${INSTRUCTION.getTop} = function(l){return l},
+                ${INSTRUCTION.getTop} = function(t){return t},
+                ${INSTRUCTION.getParent} = function(p){return p},
                 ${INSTRUCTION.setProperty} = function(o,p,v){return o[p] = v},
                 ${INSTRUCTION.getProperty} = function(o,p){return o[p]},
                 ${INSTRUCTION.callMethod} = function(o,p,a){return o[p].apply(o,a)},

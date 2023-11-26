@@ -163,6 +163,12 @@ export function createTopGetWrapper (top: Identifier): CallExpression {
     return createSimpleCallExpression(getTopIdentifier, [top]);
 }
 
+export function createParentGetWrapper (parent: Identifier): CallExpression {
+    const getTopIdentifier = createIdentifier(INSTRUCTION.getParent);
+
+    return createSimpleCallExpression(getTopIdentifier, [parent]);
+}
+
 export function createPropertySetWrapper (propertyName: string, obj: Expression, value: Expression): CallExpression {
     const setPropertyIdentifier = createIdentifier(INSTRUCTION.setProperty);
 

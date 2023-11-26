@@ -21,6 +21,7 @@ const PROCESSED_SCRIPT_RE = new RegExp([
     reEscape(INSTRUCTION.getLocation),
     reEscape(INSTRUCTION.setLocation),
     reEscape(INSTRUCTION.getTop),
+    reEscape(INSTRUCTION.getParent),
     reEscape(INSTRUCTION.getProperty),
     reEscape(INSTRUCTION.setProperty),
     reEscape(INSTRUCTION.callMethod),
