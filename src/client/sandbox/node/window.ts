@@ -584,9 +584,11 @@ export default class WindowSandbox extends SandboxBase {
     }
 
     private getWindowOpenTarget (originTarget: string): string {
-        if (originTarget)
-            return getCorrectedTargetForSinglePageMode(String(originTarget));
+        // Most of the time, this is for opening a new popup,
+        // so we'll let the proxied website cook.
+        if (originTarget) return originTarget;
 
+        // Otherwise, we'll use our defaults target.
         return settings.get().allowMultipleWindows ? DefaultTarget.windowOpen : '_self';
     }
 
