@@ -78,6 +78,7 @@ import { getNativeQuerySelectorAll } from '../../utils/query-selector';
 import DocumentTitleStorageInitializer from './document/title-storage-initializer';
 import { SET_SERVICE_WORKER_SETTINGS } from '../../worker/set-settings-command';
 import getCorrectedTargetForSinglePageMode from '../../utils/get-corrected-target-for-single-page-mode';
+import getProxiedIframeTop from '../../../utils/get-iframe-top';
 
 type BlobProcessingSettings = {
     sessionId: string;
@@ -182,7 +183,7 @@ export default class WindowSandbox extends SandboxBase {
     }
 
     private raiseUncaughtJsErrorEvent (type: string, event: ErrorEvent | PromiseRejectionEvent, window: Window): void {
-        if (isCrossDomainWindows(window, window.top))
+        if (isCrossDomainWindows(window, getProxiedIframeTop()))
             return;
 
         const sendToTopWindow = isIframeWindow(window);
@@ -204,7 +205,7 @@ export default class WindowSandbox extends SandboxBase {
 
         if (sendToTopWindow) {
             this.emit(type, { msg, pageUrl, stack, inIframe: true });
-            this.messageSandbox.sendServiceMsg({ msg, pageUrl, stack, cmd: type }, window.top);
+            this.messageSandbox.sendServiceMsg({ msg, pageUrl, stack, cmd: type }, getProxiedIframeTop());
         }
         else
             this.emit(type, { msg, pageUrl, stack });

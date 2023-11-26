@@ -1,6 +1,7 @@
 import SandboxBase from '../base';
 import MessageSandbox from './message';
 import { isIframeWindow } from '../../utils/dom';
+import getProxiedIframeTop from '../../../utils/get-iframe-top';
 
 const WINDOW_ACTIVATED_EVENT   = 'hammerhead|event|window-activated';
 const WINDOW_DEACTIVATED_EVENT = 'hammerhead|event|window-deactivated';
@@ -26,7 +27,7 @@ export default class ActiveWindowTracker extends SandboxBase {
         super.attach(window);
 
         this._isIframeWindow = isIframeWindow(window);
-        this._activeWindow   = !this._isIframeWindow ? window.top : null;
+        this._activeWindow   = !this._isIframeWindow ? getProxiedIframeTop() : null;
         this._isActive       = !this._isIframeWindow;
 
         this._messageSandbox.on(this._messageSandbox.SERVICE_MSG_RECEIVED_EVENT, e => {
@@ -56,7 +57,7 @@ export default class ActiveWindowTracker extends SandboxBase {
         else {
             this._messageSandbox.sendServiceMsg({
                 cmd: WINDOW_ACTIVATED_EVENT,
-            }, this.window.top);
+            }, getProxiedIframeTop(this.window));
         }
     }
 }

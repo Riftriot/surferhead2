@@ -28,6 +28,7 @@ import { createOverriddenDescriptor, overrideStringRepresentation } from '../../
 import MessageSandbox from '../../event/message';
 import { isFunction } from '../../../utils/types';
 import { ParsedProxyUrl, ResourceType } from '../../../../typings/url';
+import getProxiedIframeParent from '../../../../utils/get-iframe-parent';
 
 
 const GET_ORIGIN_CMD      = 'hammerhead|command|get-origin';
@@ -179,8 +180,8 @@ class LocationContext {
 
         let proxyPort = null;
 
-        if (window !== window.parent) {
-            const parentLocationUrl       = getLocationUrl(window.parent) as string;
+        if (window !== getProxiedIframeParent()) {
+            const parentLocationUrl       = getLocationUrl(getProxiedIframeParent()) as string;
             const parsedParentLocationUrl = parseProxyUrl(parentLocationUrl);
 
             if (parsedParentLocationUrl && parsedParentLocationUrl.proxy) {

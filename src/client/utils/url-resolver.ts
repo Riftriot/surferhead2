@@ -2,6 +2,7 @@ import nativeMethods from '../sandbox/native-methods';
 import * as destLocation from '../utils/destination-location';
 import { ensureTrailingSlash, parseUrl } from '../../utils/url';
 import { isIframeWithoutSrc, getFrameElement } from './dom';
+import getProxiedIframeParent from '../../utils/get-iframe-parent';
 
 const DOCUMENT_URL_RESOLVER = 'hammerhead|document-url-resolver';
 
@@ -67,7 +68,7 @@ export default {
                                           this._isNestedIframeWithoutSrc(doc.defaultView);
 
             if (needUseParentResolver)
-                return this.resolve(url, window.parent.document);
+                return this.resolve(url, getProxiedIframeParent().document);
         }
 
         return ensureTrailingSlash(url, href);

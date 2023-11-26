@@ -597,13 +597,11 @@ export default class DomProcessor {
         attrValue = attrValue && attrValue.replace(/\s/g, '');
 
         if (attrValue === '_blank') {
-            this.adapter.setAttr(el, pattern.targetAttr, '_self');
-            // this.adapter.setAttr(el, pattern.targetAttr, '_top');
+            this.adapter.setAttr(el, pattern.targetAttr, 'surferhead_top_proxied_iframe');
             this.adapter.setAttr(el, storedTargetAttr, attrValue);
         }
-        // TODO: Vexcited: add better checks with event listener (ig ??)
         else if (attrValue === '_top') {
-            this.adapter.setAttr(el, pattern.targetAttr, '_self');
+            this.adapter.setAttr(el, pattern.targetAttr, 'surferhead_top_proxied_iframe');
             this.adapter.setAttr(el, storedTargetAttr, attrValue);
         }
     }

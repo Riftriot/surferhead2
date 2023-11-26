@@ -13,6 +13,7 @@ import ElementEditingWatcher from './element-editing-watcher';
 import { ScrollState } from '../../../typings/client';
 import nextTick from '../../utils/next-tick';
 import { isFunction } from '../../utils/types';
+import getProxiedIframeTop from '../../../utils/get-iframe-top';
 
 const INTERNAL_FOCUS_BLUR_FLAG_PREFIX = 'hammerhead|event|internal-';
 
@@ -231,7 +232,7 @@ export default class FocusBlurSandbox extends SandboxBase {
         super.attach(window);
 
         this._activeWindowTracker.attach(window);
-        this._topWindow = domUtils.isCrossDomainWindows(window, window.top) ? window : window.top;
+        this._topWindow = domUtils.isCrossDomainWindows(window, getProxiedIframeTop()) ? window : getProxiedIframeTop();
 
         this._listeners.addInternalEventBeforeListener(window, ['focus', 'blur'], () => {
             const activeElement = domUtils.getActiveElement(this.document);

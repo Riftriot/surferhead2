@@ -8,7 +8,7 @@ export default function (target = ''): string {
 
     if (target && !isKeywordTarget(target) && !windowsStorage.findByName(target) ||
         /_blank/i.test(target))
-        return '_top';
+        return 'surferhead_top_proxied_iframe';
 
     return target;
 }

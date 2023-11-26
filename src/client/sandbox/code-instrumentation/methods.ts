@@ -12,6 +12,7 @@ import { getProxyUrl, stringifyResourceType } from '../../utils/url';
 import nativeMethods from '../native-methods';
 import MessageSandbox from '../event/message';
 import settings from '../../settings';
+import getProxiedIframeTop from '../../../utils/get-iframe-top';
 
 export default class MethodCallInstrumentation extends SandboxBase {
     methodWrappers: any;
@@ -56,7 +57,7 @@ export default class MethodCallInstrumentation extends SandboxBase {
     }
 
     static _getLocationResourceType (location: Location) {
-        return window.top.location === location ? null : stringifyResourceType({ isIframe: true });
+        return getProxiedIframeTop().location === location ? null : stringifyResourceType({ isIframe: true });
     }
 
     static _isPostMessageFn (win: Window, fn: Function) {

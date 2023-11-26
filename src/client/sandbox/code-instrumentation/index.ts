@@ -1,7 +1,6 @@
 import SandboxBase from '../base';
 import PropertyAccessorsInstrumentation from './properties';
 import LocationAccessorsInstrumentation from './location';
-import TopAccessorInstrumentation from './top';
 import MethodCallInstrumentation from './methods';
 import { processScript } from '../../../processing/script';
 import INSTRUCTION from '../../../processing/script/instruction';
@@ -12,13 +11,14 @@ import urlResolver from '../../utils/url-resolver';
 import EventSandbox from '../event';
 import MessageSandbox from '../event/message';
 import { isFunction } from 'lodash';
+import getProxiedIframeTop from '../../../utils/get-iframe-top';
+import getProxiedIframeParent from '../../../utils/get-iframe-parent';
 
 export default class CodeInstrumentation extends SandboxBase {
     static readonly WRAPPED_EVAL_FN = 'hammerhead|code-instrumentation|wrapped-eval-fn';
 
     _methodCallInstrumentation: MethodCallInstrumentation;
     _locationAccessorsInstrumentation: LocationAccessorsInstrumentation;
-    _topAccessorInstrumentation: TopAccessorInstrumentation;
     _propertyAccessorsInstrumentation: PropertyAccessorsInstrumentation;
 
     constructor (eventSandbox: EventSandbox, messageSandbox: MessageSandbox) {
@@ -26,7 +26,6 @@ export default class CodeInstrumentation extends SandboxBase {
 
         this._methodCallInstrumentation        = new MethodCallInstrumentation(eventSandbox.message);
         this._locationAccessorsInstrumentation = new LocationAccessorsInstrumentation(messageSandbox);
-        this._topAccessorInstrumentation       = new TopAccessorInstrumentation();
         this._propertyAccessorsInstrumentation = new PropertyAccessorsInstrumentation();
     }
 
@@ -35,8 +34,17 @@ export default class CodeInstrumentation extends SandboxBase {
 
         this._methodCallInstrumentation.attach(window);
         this._locationAccessorsInstrumentation.attach(window);
-        this._topAccessorInstrumentation.attach(window);
         this._propertyAccessorsInstrumentation.attach(window);
+
+        nativeMethods.objectDefineProperty(window, INSTRUCTION.getTop, {
+            value:        getProxiedIframeTop,
+            configurable: true,
+        });
+
+        nativeMethods.objectDefineProperty(window, INSTRUCTION.getParent, {
+            value:        getProxiedIframeParent,
+            configurable: true,
+        });
 
         // NOTE: In Google Chrome, iframes whose src contains html code raise the 'load' event twice.
         // So, we need to define code instrumentation functions as 'configurable' so that they can be redefined.

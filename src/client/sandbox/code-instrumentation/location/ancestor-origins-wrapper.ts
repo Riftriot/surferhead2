@@ -1,6 +1,7 @@
 import nativeMethods from '../../native-methods';
 import LocationAccessorsInstrumentation from './index';
 import { createOverriddenDescriptor } from '../../../utils/overriding';
+// import getProxiedIframeParent from '../../../../utils/get-iframe-parent';
 
 const lengthWeakMap = new WeakMap<DOMStringListWrapper, number>();
 
@@ -29,7 +30,7 @@ export default class DOMStringListWrapper extends DOMStringListInheritor {
             const isCrossDomainParent   = parentLocationWrapper === parentWindow.location;
 
             // eslint-disable-next-line no-restricted-properties
-            updateOrigin(nativeOrigins, this, i.toString(), isCrossDomainParent ? '' : parentLocationWrapper.origin);
+            updateOrigin(nativeOrigins, this, i.toString(), isCrossDomainParent ? '' : parentLocationWrapper?.origin ?? '');
 
             if (isCrossDomainParent && getCrossDomainOrigin)
             //@ts-ignore

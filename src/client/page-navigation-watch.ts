@@ -19,6 +19,8 @@ import CodeInstrumentation from './sandbox/code-instrumentation';
 import ElementSandbox from './sandbox/node/element';
 import { ElementSandboxBeforeFormSubmitEvent } from '../typings/client';
 import ChildWindowSandbox from './sandbox/child-window';
+import getProxiedIframeTop from '../utils/get-iframe-top';
+import getProxiedIframeParent from '../utils/get-iframe-parent';
 
 export default class PageNavigationWatch extends EventEmiter {
     PAGE_NAVIGATION_TRIGGERED_EVENT = 'hammerhead|event|page-navigation-triggered';
@@ -67,11 +69,9 @@ export default class PageNavigationWatch extends EventEmiter {
 
         switch (target) {
             case '_top':
-                // TODO: uh, this is not good
-                console.log('todo: top targetWindow');
-                return window.top;
+                return getProxiedIframeTop();
             case '_parent':
-                return window.parent;
+                return getProxiedIframeParent();
             case '_self':
                 return window;
             default:

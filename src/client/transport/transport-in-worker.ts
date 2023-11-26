@@ -12,6 +12,7 @@ import IntegerIdGenerator from '../utils/integer-id-generator';
 import MessageSandbox from '../sandbox/event/message';
 import nativeMethods from '../sandbox/native-methods';
 import { HANDLE_PORT_CMD, SET_INITIAL_WORKER_SETTINGS_CMD } from './consts';
+import getProxiedIframeTop from '../../utils/get-iframe-top';
 
 const GET_MESSAGE_PORT = 'hammerhead|command|get-message-port';
 const SET_MESSAGE_PORT = 'hammerhead|command|set-message-port';
@@ -77,7 +78,7 @@ export default class TransportInWorker extends TransportBase {
     }
 
     public start (messageSandbox: MessageSandbox): void {
-        if (window === window.top) {
+        if (window === getProxiedIframeTop()) {
             // @ts-ignore
             this._transportWorker = new nativeMethods.Worker(settings.get().transportWorkerUrl, { name: 'Transport' });
 
@@ -91,7 +92,7 @@ export default class TransportInWorker extends TransportBase {
             this._processQueue();
         }
         else
-            messageSandbox.sendServiceMsg({ cmd: GET_MESSAGE_PORT }, window.top);
+            messageSandbox.sendServiceMsg({ cmd: GET_MESSAGE_PORT }, getProxiedIframeTop());
 
         messageSandbox.on(messageSandbox.SERVICE_MSG_RECEIVED_EVENT, ({ message, source, ports }) => {
             if (message.cmd === GET_MESSAGE_PORT) {

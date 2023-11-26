@@ -31,7 +31,7 @@ import EventSandbox from '../event';
 import ChildWindowSandbox from '../child-window';
 import BUILTIN_HEADERS from '../../../request-pipeline/builtin-header-names';
 import toKebabCase from '../../utils/to-kebab-case';
-// import getCorrectedTargetForSinglePageMode from '../../utils/get-corrected-target-for-single-page-mode';
+import getCorrectedTargetForSinglePageMode from '../../utils/get-corrected-target-for-single-page-mode';
 
 const RESTRICTED_META_HTTP_EQUIV_VALUES = [BUILTIN_HEADERS.refresh, BUILTIN_HEADERS.contentSecurityPolicy];
 
@@ -230,20 +230,21 @@ export default class ElementSandbox extends SandboxBase {
         }
         else if (loweredAttr === 'target' && DomProcessor.isTagWithTargetAttr(tagName) ||
                  loweredAttr === 'formtarget' && DomProcessor.isTagWithFormTargetAttr(tagName)) {
-            // const currentTarget = nativeMethods.getAttribute.call(el, loweredAttr);
-            // const newTarget     = getCorrectedTargetForSinglePageMode(value);
-            args[valueIndex] = '_self'; // TODO: add event on click ?
-            needToCallTargetChanged = true;
-            // if (newTarget !== currentTarget) {
-            //     const storedTargetAttr = DomProcessor.getStoredAttrName(attr);
+            const currentTarget = nativeMethods.getAttribute.call(el, loweredAttr);
+            let newTarget     = getCorrectedTargetForSinglePageMode(value);
 
-            //     setAttrMeth.apply(el, isNs ? [ns, storedTargetAttr, value] : [storedTargetAttr, value]);
-            //     args[valueIndex] = newTarget;
+            if (newTarget === '_top') newTarget = 'surferhead_top_proxied_iframe';
 
-            //     needToCallTargetChanged = true;
-            // }
-            // else
-            //     return null;
+            if (newTarget !== currentTarget) {
+                const storedTargetAttr = DomProcessor.getStoredAttrName(attr);
+
+                setAttrMeth.apply(el, isNs ? [ns, storedTargetAttr, value] : [storedTargetAttr, value]);
+                args[valueIndex] = newTarget;
+
+                needToCallTargetChanged = true;
+            }
+            else
+                return null;
         }
         else if (attr === 'sandbox') {
             const storedSandboxAttr = DomProcessor.getStoredAttrName(attr);

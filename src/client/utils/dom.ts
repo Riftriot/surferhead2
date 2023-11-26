@@ -16,6 +16,8 @@ import {
 import { getNativeQuerySelectorAll } from './query-selector';
 import { instanceAndPrototypeToStringAreEqual } from './feature-detection';
 import { isFunction, isNumber } from './types';
+import getProxiedIframeTop from '../../utils/get-iframe-top';
+import getProxiedIframeParent from '../../utils/get-iframe-parent';
 
 let scrollbarSize = 0;
 
@@ -175,13 +177,13 @@ export function getMapContainer (el: HTMLElement) {
 }
 
 export function getParentWindowWithSrc (window: Window): Window {
-    const parent           = window.parent;
+    const parent           = getProxiedIframeParent(window);
     let parentFrameElement = null;
 
-    if (window === window.top)
+    if (window === getProxiedIframeTop())
         return window;
 
-    if (parent === window.top || isCrossDomainWindows(window, parent))
+    if (parent === getProxiedIframeTop() || isCrossDomainWindows(window, parent))
         return parent;
 
     try {
@@ -245,9 +247,9 @@ export function getSelectVisibleChildren (select: HTMLSelectElement) {
 
 export function getTopSameDomainWindow (window: Window): Window {
     let result        = window;
-    let currentWindow = window.parent;
+    let currentWindow = getProxiedIframeParent(window);
 
-    if (result === window.top)
+    if (result === getProxiedIframeTop())
         return result;
 
     while (currentWindow) {
@@ -258,7 +260,7 @@ export function getTopSameDomainWindow (window: Window): Window {
                 result = currentWindow;
         }
 
-        currentWindow = currentWindow !== window.top ? currentWindow.parent : null;
+        currentWindow = currentWindow !== getProxiedIframeTop() ? currentWindow.parent : null;
     }
 
     return result;

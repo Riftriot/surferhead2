@@ -93,7 +93,10 @@ export default class ChildWindowSandbox extends SandboxBase {
             const isAnchor        = domUtils.isAnchorElement(el);
             const targetGetter    = isAnchor ? nativeMethods.anchorTargetGetter : nativeMethods.areaTargetGetter;
             const target          = targetGetter.call(el);
-            const correctedTarget = getCorrectedTargetForSinglePageMode(target);
+            let correctedTarget   = getCorrectedTargetForSinglePageMode(target);
+
+            if (correctedTarget === '_top') correctedTarget = 'surferhead_top_proxied_iframe';
+
             const targetSetter    = isAnchor ? nativeMethods.anchorTargetSetter : nativeMethods.areaTargetSetter;
 
             targetSetter.call(el, correctedTarget);

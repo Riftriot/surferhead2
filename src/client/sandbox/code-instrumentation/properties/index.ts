@@ -1,6 +1,5 @@
 import LocationAccessorsInstrumentation from '../location';
 import LocationWrapper from '../location/wrapper';
-import TopAccessorInstrumentation from '../top';
 import SandboxBase from '../../base';
 import * as domUtils from '../../../utils/dom';
 import { isNullOrUndefined, inaccessibleTypeToStr } from '../../../utils/types';
@@ -13,6 +12,8 @@ import DomProcessor from '../../../../processing/dom';
 import settings from '../../../settings';
 import WindowSandbox from '../../node/window';
 import noop from '../../../utils/noop';
+import getProxiedIframeTop from '../../../../utils/get-iframe-top';
+import getProxiedIframeParent from '../../../../utils/get-iframe-parent';
 
 export default class PropertyAccessorsInstrumentation extends SandboxBase {
     // NOTE: Isolate throw statements into a separate function because the
@@ -32,9 +33,9 @@ export default class PropertyAccessorsInstrumentation extends SandboxBase {
 
             value = prepareUrl(value);
 
-            proxyUrl = location !== window.top.location
+            proxyUrl = location !== getProxiedIframeTop().location
                 ? urlUtils.getProxyUrl(value, { resourceType })
-                : urlUtils.getProxyUrl(value, { proxyPort: settings.get().crossDomainProxyPort });
+                : urlUtils.getProxyUrl(value, { proxyPort: settings.get().proxyPort });
         }
         else
             proxyUrl = DomProcessor.processJsAttrValue(value, { isJsProtocol: true, isEventAttr: false });
@@ -86,17 +87,13 @@ export default class PropertyAccessorsInstrumentation extends SandboxBase {
         },
 
         top: {
-            condition: (w: any) => {
-                // NOTE: In IE, the 'top' property is accessible only for the window where it was created.
-                // If we try to get access to the 'top' property from a different window, an error will be raised.
-                try {
-                    return w instanceof Window;
-                }
-                catch (e) {
-                    return false;
-                }
-            },
-            get: TopAccessorInstrumentation._topGetter,
+            condition: (win: Window) => win.toString() === '[object Window]',
+            get:       getProxiedIframeTop,
+        },
+
+        parent: {
+            condition: (win: Window) => win.toString() === '[object Window]',
+            get:       getProxiedIframeParent,
         },
     };
 

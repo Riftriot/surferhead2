@@ -7,6 +7,7 @@ import * as domUtils from '../utils/dom';
 import DocumentWriter from '../sandbox/node/document/writer';
 import { findByName } from '../sandbox/windows-storage';
 import { processHtml } from '../utils/html';
+import getProxiedIframeTop from '../../utils/get-iframe-top';
 
 export default class ClientDomAdapter extends BaseDomAdapter {
     private _srcdocMode = false;
@@ -80,9 +81,9 @@ export default class ClientDomAdapter extends BaseDomAdapter {
 
         try {
             if (el[INTERNAL_PROPS.processedContext])
-                return window.top !== el[INTERNAL_PROPS.processedContext];
+                return getProxiedIframeTop() !== el[INTERNAL_PROPS.processedContext];
 
-            return window.top.document !== domUtils.findDocument(el);
+            return getProxiedIframeTop().document !== domUtils.findDocument(el);
         }
         catch (e) {
             return true;
@@ -96,7 +97,7 @@ export default class ClientDomAdapter extends BaseDomAdapter {
     isTopParentIframe (el: HTMLElement): boolean {
         const elWindow = el[INTERNAL_PROPS.processedContext];
 
-        return elWindow && window.top === elWindow.parent;
+        return elWindow && getProxiedIframeTop() === elWindow.parent;
     }
 
     sameOriginCheck (location: string, checkedUrl: string) {
