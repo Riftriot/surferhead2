@@ -72,6 +72,24 @@ export default class MessageSandbox extends SandboxBase {
         }
     }
 
+    private static _isSurferHeadMessage (data: any): boolean {
+        const isMainProxyWindow = window.name === 'surferhead_top_proxied_iframe';
+        const isTypeFromSurferHead = 'type' in data && data.type.startsWith('surferhead:');
+
+        return isMainProxyWindow && isTypeFromSurferHead;
+    }
+
+    private static _surferHeadMessageHandler (message: { type: string, data?: string }): void {
+        switch (message.type) {
+            case 'surferhead:top.history.forward':
+                window.history.forward();
+                return;
+            case 'surferhead:top.history.back':
+                window.history.back();
+                return;
+        }
+    }
+
     private static _getMessageData (e) {
         const rawData = isMessageEvent(e) ? nativeMethods.messageEventDataGetter.call(e) : e.data;
 
@@ -104,8 +122,11 @@ export default class MessageSandbox extends SandboxBase {
         }
     }
 
-    private _onWindowMessage (e: MessageEvent, originListener): void {
+    private _onWindowMessage (e: MessageEvent, originListener): any {
         const data = MessageSandbox._getMessageData(e);
+
+        if (MessageSandbox._isSurferHeadMessage(data))
+            return MessageSandbox._surferHeadMessageHandler(data);
 
         if (data.type !== MessageType.Service) {
             const originUrl = destLocation.get();

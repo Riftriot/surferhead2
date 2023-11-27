@@ -45,8 +45,31 @@ This opens a playground page where you can specify a webpage to proxy in an ifra
 * HTTP/HTTPS requests
 * WebSockets, EventSource
 * File upload
-* request events (`onRequest`, `onResponse`)
+* Request events (`onRequest`, `onResponse`)
 * Bypassing requests
+
+## API in the wrapper window
+
+### `postMessage`
+
+Messages are JSON objects with the following fields:
+
+* `type` - a message type. The available message types are listed below.
+* `data` - data to pass in the type. The data type depends on the message type.
+
+You should send messages with the `*` target origin.
+
+### `surferhead:top.history.forward`
+
+Forwards the top window to the next page in the history.
+
+There's no data to pass in this message type.
+
+### `surferhead:top.history.back`
+
+Goes back to the previous page in the top window's history.
+
+There's no data to pass in this message type.
 
 ## Reporting Issues and Contributing
 

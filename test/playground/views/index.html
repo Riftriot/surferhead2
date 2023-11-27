@@ -5,8 +5,15 @@
 </head>
 <body>
   <input type="text" id="sh_iframe_original_url">
-  <button type="button" name="submit" id="sh_url_btn">
+  <button type="button" id="sh_url_btn">
     Attach to iframe
+  </button>
+
+  <button type="button" id="sh_hist_prev">
+    Previous
+  </button>
+  <button type="button" id="sh_hist_next">
+    Next
   </button>
 
   <script>
@@ -25,6 +32,10 @@
     const urlInput = document.querySelector('#sh_iframe_original_url');
     /** @type {HTMLButtonElement} */
     const urlBtn = document.querySelector('#sh_url_btn');
+    /** @type {HTMLButtonElement} */
+    const prevBtn = document.querySelector('#sh_hist_prev');
+    /** @type {HTMLButtonElement} */
+    const nextBtn = document.querySelector('#sh_hist_next');
 
     urlBtn.onclick = async () => {
       const url = urlInput.value;
@@ -44,6 +55,20 @@
 
       console.info("iframe: Redirecting to", proxy_url);
       iframe.src = proxy_url;
+    };
+
+    nextBtn.onclick = () => {
+      // sends a message to the iframe
+      // asking to history.forward()
+      iframe.contentWindow.postMessage({
+        type: "surferhead:top.history.forward"
+      }, "*");
+    };
+
+    prevBtn.onclick = () => {
+      iframe.contentWindow.postMessage({
+        type: "surferhead:top.history.back"
+      }, "*");
     };
   </script>
 </body>
